@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd"
+       default-lazy-init="true">
+
+    <description>Spring公共配置</description>
+
+    <!-- 定义受环境影响易变的变量 -->
+    <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE"/>
+        <property name="ignoreResourceNotFound" value="true"/>
+        <property name="ignoreUnresolvablePlaceholders" value="true"/>
+        <property name="locations">
+            <list>
+                <value>classpath*:application.properties</value>
+            </list>
+        </property>
+    </bean>
+
+    <!--Activemq connection factory-->
+    <bean id="mqConnectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
+        <constructor-arg index="0" value="${jms.broker.url}"/>
+    </bean>
+
+    <!--  Define Default Destination Queue-->
+    <bean id="defaultDestination" class="org.apache.activemq.command.ActiveMQQueue">
+        <constructor-arg index="0" value="${jms.queue.name}"/>
+    </bean>
+
+    <!--spring connection factory-->
+    <bean id="connectionFactory" class="org.springframework.jms.connection.CachingConnectionFactory">
+        <constructor-arg index="0" ref="mqConnectionFactory"/>
+    </bean>
+
+    <!--Define jms Template-->
+    <bean id="jmsTemplate" class="org.springframework.jms.core.JmsTemplate">
+        <property name="connectionFactory" ref="connectionFactory"/>
+        <property name="defaultDestination" ref="defaultDestination"/>
+    </bean>
+
+    <!--Define Message Proucer-->
+    <bean id="messageSender" class="com.xpcomrade.jms.MessageSender">
+        <constructor-arg index="0" ref="jmsTemplate"/>
+    </bean>
+
+    <!--Define Message Receive Listener -->
+    <bean id="messageReceiver" class="com.xpcomrade.jms.MessageReceiver"/>
+
+    <bean class="org.springframework.jms.listener.SimpleMessageListenerContainer">
+        <property name="connectionFactory" ref="connectionFactory"/>
+        <property name="destinationName" value="${jms.queue.name}"/>
+        <property name="messageListener" ref="messageReceiver"/>
+    </bean>
+
+
+
+</beans>
