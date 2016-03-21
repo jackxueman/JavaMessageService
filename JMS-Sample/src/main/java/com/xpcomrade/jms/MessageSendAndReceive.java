@@ -18,7 +18,7 @@ public class MessageSendAndReceive {
         Connection connection = factory.createConnection();
         connection.start();
 
-        Queue queue = new ActiveMQQueue("testQueue");
+        Queue queue = new ActiveMQQueue("xpcomrade");
 
         final Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
         Message message = session.createTextMessage("Hello JMS!");

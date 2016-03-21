@@ -44,13 +44,17 @@
         <constructor-arg index="0" ref="jmsTemplate"/>
     </bean>
 
+    <bean id="messageReceiver" class="com.xpcomrade.jms.MessageReceiver">
+        <constructor-arg index="0" ref="jmsTemplate"/>
+    </bean>
+
     <!--Define Message Receive Listener -->
-    <bean id="messageReceiver" class="com.xpcomrade.jms.MessageReceiver"/>
+    <bean id="messageReceiveListener" class="com.xpcomrade.jms.MessageReceiveListener"/>
 
     <bean class="org.springframework.jms.listener.SimpleMessageListenerContainer">
         <property name="connectionFactory" ref="connectionFactory"/>
         <property name="destinationName" value="${jms.queue.name}"/>
-        <property name="messageListener" ref="messageReceiver"/>
+        <property name="messageListener" ref="messageReceiveListener"/>
     </bean>
 
 
