@@ -10,7 +10,7 @@ import javax.jms.*;
  * Copyright (c) 2016, xpcomrade@gmail.com All Rights Reserved.
  * Description: TODO(这里用一句话描述这个类的作用). <br/>
  */
-public class MessageSendAndReceive {
+public class QueueSendAndReceive {
 
     public static void main(String[] args) throws Exception{
         ConnectionFactory factory = new ActiveMQConnectionFactory("tcp://172.16.1.70:61616");
